@@ -12,11 +12,11 @@ class fileobject:
         self.linelen = linelenin
         self.data = datain##may need to check if array/forceit
         
-    def forcesetdata(self,forcedat):
+    def forcesetdata(self,forcedat):##forces the data of the file to the input specified
         self.data = forcedat
         self.linelen = len(forcedat)
         
-    def changename(self,newname):
+    def changename(self,newname):##changes fileobject name
         self.name = newname
     def getdata(self):
         return self.data
@@ -260,7 +260,47 @@ def add_name(fname,mega):#add_name('file4.txt','out')
     print('Done!')
     os.chdir(cwd)
 
+
+def unpackfile_return(fname,mega):##unpacks file then returns array with data and names for use in prgs
+    returner = []##name,len,dat
+    if '.mega' in mega.lower():
+        pass
+    else:
+        mega+='.mega'
+        
+    f = open(mega,'r')
+    names = csv2array(f.readline())
+    lines = csv2array(f.readline())
+    pos = names.index(fname)
+    MEGA_data = f.readlines()
+    FILE_data = []
+    filelinetable=[]##all end of datalines use prev endofdatalines to get data
+
     
+    filelinepos = 0##satartline of the line data
+    for x in range(names.index(fname)+1):#filepos of data in array 
+        filelinepos +=int(lines[x])##gets linepos from adding linelen together
+        #print(filelinepos)
+        filelinetable.append(filelinepos)
+    print(filelinetable)
+    print(pos,'/'+str(names)+'/'+str(lines)+'@@@@@@END@@@@@@\n')
+    f.close()
+    if fname.index(fname) == 0:
+        for x in range(0,filelinetable[0]):##case fopr first entry as no previous marker could check for none or neg val instead
+            FILE_data.append(MEGA_data[x].strip('\n'))##appends entries to outfile
+    else:
+        for x in range(filelinetable[pos-1],filelinetable[pos]):
+            FILE_data.append(MEGA_data[x].strip('\n'))##ALSO STRIPS\n form lines
+            #pass
+            #pass#FILE_data = megafile
+        
+    returner.append(names[pos])
+    returner.append(lines[pos])
+    returner.append(FILE_data)
+    
+    return returner
+
+
 def csv2array(csvstr):##may need os.isfile() or whatever it is to check file is in dir before declaring eofsame for array2csv
     arrayreturn = []
     temp = ''
@@ -293,7 +333,9 @@ def peek(mega):##peek files in mega
     else:
         mega+='.mega'
     f = open(mega)
-    return csv2array(f.readline())
+    peeker = f.readline()
+    f.close()
+    return csv2array(peeker)#csv2array(f.readline())
 
 
 def makeMEGAC(megaIn,megac):
