@@ -13,7 +13,7 @@
 ##with zipfile.ZipFile("ds_dphs_csv.zip") as a:
 ##        a.extractall()
 import zipfile,os
-def ext2dir(fname,dname):
+def ext2dir(fname,dname):##filename , dirname
     cwd = os.getcwd()
     zipfl = zipfile.ZipFile(os.getcwd()+'\\'+fname+".zip")
     os.mkdir(str(dname))

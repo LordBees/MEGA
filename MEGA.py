@@ -337,7 +337,7 @@ def peek(mega):##peek files in mega
     f.close()
     return csv2array(peeker)#csv2array(f.readline())
 
-
+######XOR CRYPTO
 def makeMEGAC(megaIn,megac):
     if '.mega' in megaIn.lower():
         pass
@@ -368,6 +368,42 @@ def unmakeMEGAC(megacIn,mega):##may want headers for mega and megac
     ##end
 
 
+####ENDXOR CRYPTO
+
+####mega zip
+def makeMEGAZ(megaIn,megaZ):##megazip
+    if '.mega' in megaIn.lower():
+        pass
+    else:
+        megaIn+='.mega'
+
+    if '.megaZ' in megaZ.lower():
+        pass
+    else:
+        megaZ+='.megaZ'
+    print('compressing: '+megaIn+' --> '+megac)
+    ##zippbit
+    ##end
+    
+    
+def unmakeMEGAZ(megazIn,mega):##may want headers for mega and megac
+    if '.mega' in mega.lower():
+        pass
+    else:
+        mega+='.mega'
+
+    if '.megaz' in megazIn.lower():
+        pass
+    else:
+        megazIn+='.megaz'
+    print('decompressing: '+megazIn+' --> '+mega)
+    with zipfile.ZipFile(str(fname)+".megaz") as a:###NOT DONE
+        a.extractall()
+    print('megaz = '+mega+'\nDONE!')
+    
+    ##zippbit
+    ##end
+##END    
 #def cryptMEGAheader(megax):##old def
 ##def cryptMega(mega,compressed = False,cryptinfo = ['','','']):#megafile|compression enabled|cryptinfo[type,key,iteration]    ####.megax for crypted output
 ##    if compressed:##may do different things to compressed to mk secure
