@@ -30,6 +30,94 @@ class fileobject:
         return self.name
     def getlinelen(self):
         return self.linelen
+##class xor:
+##    def __init__ (self):
+##        pass
+##    def do(self,k,m):
+##        pass
+##    def de(self,k,m):
+##        pass
+##    def hexdo
+    
+def xor(k,m):##normal txt custom
+    ##process xor hexify ascii codes then strip 0x and pack
+    temp = ''
+    for x in range(len(m)):
+        print('~~~~~~~~//')
+        print('Mchar: '+str(m[x]))
+        print('Kchar: '+str(k[x%len(k)]))
+        print('Msg: '+str(temp))
+        print('Result: '+str(ord(m[x])^ord(k[x%len(k)])))
+        temp +=hex(ord(m[x])^ord(k[x%len(k)]))
+        #temp += chr((ord(k[(len(str(k))%int(x+1))]))^ord(m[x]))
+	#for x in range(len(temp)):
+            #temp[x] = chr(temp[x])
+    return temp
+
+def xorA(k,m):#arrays
+    tempa = []
+    for part in m:
+        tempa.append(xor(k,part))
+    return tempa
+def DExor(k,m):
+    tempa = []
+    buffer = ''
+    for x in m:##readd the 0x bit
+        if len(buffer) == 2:##hex = 2nums
+            tempa.append('0x' + buffer)
+            buffer = ''
+        else:
+            buffer+=x
+    print(tempa)
+##def DExor(k,m):##normal txt custom
+##    temp = ''
+##    buffer = ''
+##    for x in range(len(m)):
+##        print('#########    ITER:'+str(x))
+##        print('Mchar: '+str(m[x]))
+##        print('Kchar: '+str(k[x%len(k)]))
+##        print('Msg: '+str(temp))
+##        print('Result: '+str(ord(m[x])^ord(k[x%len(k)])))
+##        if m[x] == ' ':
+##            print('@')
+##            for letters in range(len(buffer)):#for letters in buffer:
+##                temp +=chr(ord(buffer[letters])^ord(k[letters%len(k)]))
+##                print(temp,'    ',buffer)
+##                buffer = ''
+##        else:
+##            buffer += m[x]
+##        
+##        #temp += chr((ord(k[(len(str(k))%int(x+1))]))^ord(m[x]))
+##	#for x in range(len(temp)):
+##            #temp[x] = chr(temp[x])
+##    return temp
+##
+##def DExorA(k,m):#arrays
+##    tempa = []
+##    for part in m:
+##        tempa.append(DExor(k,part))
+##    return tempa
+
+def xtst():
+    k = 'key'
+    m = 'message'
+    c = xor(k,m)
+    u = xor(k,c)
+    print('========\nkey = '+k+'\nmessage = '+m+'\n')
+    print('crypt/uncrypt')
+    print('\nc',c,'\nu',u)
+    
+def XXtst():
+    k = 'key'
+    m = 'message'
+    c = xor(k,m)
+    u = DExor(k,c)
+    print('========\nkey = '+k+'\nmessage = '+m+'\n')
+    print('crypt/uncrypt')
+    print('\nc',c,'\nu',u)
+    
+    
+
 
 def makeresident():
     cwd = os.getcwd()
@@ -338,7 +426,10 @@ def peek(mega):##peek files in mega
     return csv2array(peeker)#csv2array(f.readline())
 
 ######XOR CRYPTO
-def makeMEGAC(megaIn,megac):
+def makeMEGAC(megaIn,megac,k = 'key'):##the newlines \n are causing probs crypto works fine but handling of data not
+    cwd = os.getcwd()
+    os.chdir(cwd)
+    os.chdir('test')
     if '.mega' in megaIn.lower():
         pass
     else:
@@ -348,12 +439,28 @@ def makeMEGAC(megaIn,megac):
         pass
     else:
         megac+='.megac'
-    print('compressing: '+megaIn+' --> '+megac)
-    ##zippbit
+    print('encrypting: '+megaIn+' --> '+megac)
+    ##cbit
+    f = open(megaIn,'r')
+    Mdatin  = f.readlines()
+    f.close()
+    print(Mdatin)
+    input()
+    Mdatout = xorA(k,Mdatin)
+    print(Mdatout)
+    input()
+    Mf = open(megac,'w')
+    for x in Mdatout:
+        Mf.write(x)
+    f.close()
+    os.chdir(cwd)
     ##end
     
-    
-def unmakeMEGAC(megacIn,mega):##may want headers for mega and megac
+    ##r unmakeMEGAC('TEST','OUT',k = 'key')
+def unmakeMEGAC(megacIn,mega,k = 'key'):##may want headers for mega and megac
+    cwd = os.getcwd()
+    os.chdir(cwd)
+    os.chdir('test')
     if '.mega' in mega.lower():
         pass
     else:
@@ -363,11 +470,27 @@ def unmakeMEGAC(megacIn,mega):##may want headers for mega and megac
         pass
     else:
         megacIn+='.megac'
-    print('decompressing: '+megacIn+' --> '+mega)
-    ##zippbit
+    print('decrypting: '+megacIn+' --> '+mega)
+    ##cbit
+    f = open(megacIn,'r')
+    Mdatin  = f.readlines()
+    f.close()
+    print(Mdatin)
+    input()
+    Mdatout = xorA(k,Mdatin)
+    print(Mdatout)
+    input()
+    Mf = open(mega,'w')
+    for x in Mdatout:
+        Mf.write(x)
+    f.close()
+    os.chdir(cwd)
     ##end
 
-
+def cryptotest():
+    makeMEGAC('TESTFILE','ENCRYPTED',k = 'key')
+    unmakeMEGAC('ENCRYPTED','DECRYPTED',k = 'key')
+    #makeMEGAC('TEST','OUT',k = 'key')
 ####ENDXOR CRYPTO
 
 ####mega zip
