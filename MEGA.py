@@ -3,6 +3,8 @@ import os,zipfile
 testname = 'File1.txt'
 testlen = 3
 testdata = ['file1-1','file1-2','file1-3']
+
+hexchars = '1234567890ABCDEF'
 class fileobject:
     name = ''
     linelen = 0
@@ -30,6 +32,20 @@ class fileobject:
         return self.name
     def getlinelen(self):
         return self.linelen
+def hex2std(m):##adds 0x to hex
+    global hexchars
+    tempa=[]
+    buffer=''
+    for x in range(len(m)):
+        if (len(buffer))==2:
+            tempa.append('0x'  + buffer)
+            buffer = ''
+            buffer+=m[x]
+        else:
+            buffer+=m[x]
+    tempa.append('0x'  + buffer)
+    print(tempa)
+    return tempa
 ##class xor:
 ##    def __init__ (self):
 ##        pass
@@ -42,13 +58,19 @@ class fileobject:
 def xor(k,m):##normal txt custom
     ##process xor hexify ascii codes then strip 0x and pack
     temp = ''
+    temphx = ''##for holding to check
     for x in range(len(m)):
         print('~~~~~~~~//')
         print('Mchar: '+str(m[x]))
         print('Kchar: '+str(k[x%len(k)]))
         print('Msg: '+str(temp))
         print('Result: '+str(ord(m[x])^ord(k[x%len(k)])))
-        temp +=hex(ord(m[x])^ord(k[x%len(k)]))
+        print(hex(ord(m[x])^ord(k[x%len(k)])).upper())#[2:].upper())
+        if len(hex(ord(m[x])^ord(k[x%len(k)]))[2:].upper())<2:
+            temp +=hex(ord(m[x])^ord(k[x%len(k)]))[2:].upper()
+            temp+='0'
+        else:
+            temp +=hex(ord(m[x])^ord(k[x%len(k)]))[2:].upper()##ascii values turned into hex and 0x chopped
         #temp += chr((ord(k[(len(str(k))%int(x+1))]))^ord(m[x]))
 	#for x in range(len(temp)):
             #temp[x] = chr(temp[x])
@@ -59,16 +81,73 @@ def xorA(k,m):#arrays
     for part in m:
         tempa.append(xor(k,part))
     return tempa
+
 def DExor(k,m):
-    tempa = []
-    buffer = ''
-    for x in m:##readd the 0x bit
-        if len(buffer) == 2:##hex = 2nums
-            tempa.append('0x' + buffer)
+    global hexchars
+    tempa=[]##hex
+    tempb=[]##ascii codes den
+    hbyteb=[0,0]#hexbytebuffer
+    buffer=''
+    for x in range(len(m)):
+        if (len(buffer))==2:
+            tempa.append(buffer)
             buffer = ''
+            buffer+=m[x]
         else:
-            buffer+=x
+            buffer+=m[x]
+    tempa.append(buffer)
     print(tempa)
+    for x in range(len(tempa)):
+        hbyteb[0] = (hexchars.index(tempa[x][0].upper())+1)*16
+        hbyteb[1] = (hexchars.index(tempa[x][1].upper())+1)
+        tempb.append(int(hbyteb[0])+int(hbyteb[1]))
+        print(hbyteb)
+    print(tempb)
+    for x in range(len(tempb)):#xordec
+        #tempb[tempb.index(x)] = chr(str(int(x)^ord(k[x%len(k)])))
+        print(chr((int(tempb[x])^ord(k[x%len(k)]))))
+    print(tempb)
+    return tempb
+
+
+def DExorA(k,m):#arrays
+    tempa = []
+    for part in m:
+        tempa.append(DExor(k,part))
+    return tempa
+def Xt():
+    k='key'
+    m='test'
+    DExor(k,xor(k,m))
+    
+##    print(tempa)
+##    tempa=[]
+##    buffer=''
+##    for x in m:
+##        if (len(buffer))==2:
+##            tempa.append('0x'  + buffer)
+##            buffer = ''
+##        else:
+##            buffer+=x
+##    print(tempa)
+
+##    tempa = []
+##    buffer = ''
+##    for x in m:##readd the 0x bit
+##        if len(buffer) == 2:##hex = 2nums
+##            tempa.append('0x' + buffer)
+##            buffer = ''
+##            print('bc')
+##            buffer+=x
+##        else:
+##            print('add:'+str(x))
+##            buffer+=x
+##        print(x)
+##    print(buffer)
+##    print(len(x),';L;',len(m))
+##    print(tempa)
+
+            
 ##def DExor(k,m):##normal txt custom
 ##    temp = ''
 ##    buffer = ''
