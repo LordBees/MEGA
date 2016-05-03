@@ -32,6 +32,7 @@ class fileobject:
         return self.name
     def getlinelen(self):
         return self.linelen
+    
 def hex2std(m):##adds 0x to hex
     global hexchars
     tempa=[]
@@ -55,146 +56,195 @@ def hex2std(m):##adds 0x to hex
 ##        pass
 ##    def hexdo
     
-def xor(k,m):##normal txt custom
-    ##process xor hexify ascii codes then strip 0x and pack
-    temp = ''
-    temphx = ''##for holding to check
-    for x in range(len(m)):
-        print('~~~~~~~~//')
-        print('Mchar: '+str(m[x]))
-        print('Kchar: '+str(k[x%len(k)]))
-        print('Msg: '+str(temp))
-        print('Result: '+str(ord(m[x])^ord(k[x%len(k)])))
-        print(hex(ord(m[x])^ord(k[x%len(k)])).upper())#[2:].upper())
-        if len(hex(ord(m[x])^ord(k[x%len(k)]))[2:].upper())<2:
-            temp +=hex(ord(m[x])^ord(k[x%len(k)]))[2:].upper()
-            temp+='0'
-        else:
-            temp +=hex(ord(m[x])^ord(k[x%len(k)]))[2:].upper()##ascii values turned into hex and 0x chopped
-        #temp += chr((ord(k[(len(str(k))%int(x+1))]))^ord(m[x]))
-	#for x in range(len(temp)):
-            #temp[x] = chr(temp[x])
-    return temp
-
-def xorA(k,m):#arrays
-    tempa = []
-    for part in m:
-        tempa.append(xor(k,part))
-    return tempa
-
-def DExor(k,m):
-    global hexchars
-    tempa=[]##hex
-    tempb=[]##ascii codes den
-    hbyteb=[0,0]#hexbytebuffer
-    buffer=''
-    for x in range(len(m)):
-        if (len(buffer))==2:
-            tempa.append(buffer)
-            buffer = ''
-            buffer+=m[x]
-        else:
-            buffer+=m[x]
-    tempa.append(buffer)
-    print(tempa)
-    for x in range(len(tempa)):
-        hbyteb[0] = (hexchars.index(tempa[x][0].upper())+1)*16
-        hbyteb[1] = (hexchars.index(tempa[x][1].upper())+1)
-        tempb.append(int(hbyteb[0])+int(hbyteb[1]))
-        print(hbyteb)
-    print(tempb)
-    for x in range(len(tempb)):#xordec
-        #tempb[tempb.index(x)] = chr(str(int(x)^ord(k[x%len(k)])))
-        print(chr((int(tempb[x])^ord(k[x%len(k)]))))
-    print(tempb)
-    return tempb
-
-
-def DExorA(k,m):#arrays
-    tempa = []
-    for part in m:
-        tempa.append(DExor(k,part))
-    return tempa
-def Xt():
-    k='key'
-    m='test'
-    DExor(k,xor(k,m))
-    
-##    print(tempa)
-##    tempa=[]
-##    buffer=''
-##    for x in m:
-##        if (len(buffer))==2:
-##            tempa.append('0x'  + buffer)
-##            buffer = ''
-##        else:
-##            buffer+=x
-##    print(tempa)
-
-##    tempa = []
-##    buffer = ''
-##    for x in m:##readd the 0x bit
-##        if len(buffer) == 2:##hex = 2nums
-##            tempa.append('0x' + buffer)
-##            buffer = ''
-##            print('bc')
-##            buffer+=x
-##        else:
-##            print('add:'+str(x))
-##            buffer+=x
-##        print(x)
-##    print(buffer)
-##    print(len(x),';L;',len(m))
-##    print(tempa)
-
-            
-##def DExor(k,m):##normal txt custom
+##def xor(k,m):##normal txt custom
+##    ##process xor hexify ascii codes then strip 0x and pack
 ##    temp = ''
-##    buffer = ''
+##    temphx = ''##for holding to check
 ##    for x in range(len(m)):
-##        print('#########    ITER:'+str(x))
+##        print('~~~~~~~~//')
 ##        print('Mchar: '+str(m[x]))
 ##        print('Kchar: '+str(k[x%len(k)]))
 ##        print('Msg: '+str(temp))
 ##        print('Result: '+str(ord(m[x])^ord(k[x%len(k)])))
-##        if m[x] == ' ':
-##            print('@')
-##            for letters in range(len(buffer)):#for letters in buffer:
-##                temp +=chr(ord(buffer[letters])^ord(k[letters%len(k)]))
-##                print(temp,'    ',buffer)
-##                buffer = ''
+##        print(hex(ord(m[x])^ord(k[x%len(k)])).upper())#[2:].upper())
+##        if len(hex(ord(m[x])^ord(k[x%len(k)]))[2:].upper())<2:
+##            temp +=hex(ord(m[x])^ord(k[x%len(k)]))[2:].upper()
+##            temp+='0'
 ##        else:
-##            buffer += m[x]
-##        
+##            temp +=hex(ord(m[x])^ord(k[x%len(k)]))[2:].upper()##ascii values turned into hex and 0x chopped
 ##        #temp += chr((ord(k[(len(str(k))%int(x+1))]))^ord(m[x]))
 ##	#for x in range(len(temp)):
 ##            #temp[x] = chr(temp[x])
 ##    return temp
+##
+##def xorA(k,m):#arrays
+##    tempa = []
+##    for part in m:
+##        tempa.append(xor(k,part))
+##    return tempa
+##
+##def DExor(k,m):
+##    global hexchars
+##    tempa=[]##hex
+##    tempb=[]##ascii codes den
+##    hbyteb=[0,0]#hexbytebuffer
+##    buffer=''
+##    for x in range(len(m)):
+##        if (len(buffer))==2:
+##            tempa.append(buffer)
+##            buffer = ''
+##            buffer+=m[x]
+##        else:
+##            buffer+=m[x]
+##    tempa.append(buffer)
+##    print(tempa)
+##    for x in range(len(tempa)):
+##        hbyteb[0] = (hexchars.index(tempa[x][0].upper())+1)*16
+##        hbyteb[1] = (hexchars.index(tempa[x][1].upper())+1)
+##        tempb.append(int(hbyteb[0])+int(hbyteb[1]))
+##        print(hbyteb)
+##    print(tempb)
+##    for x in range(len(tempb)):#xordec
+##        #tempb[tempb.index(x)] = chr(str(int(x)^ord(k[x%len(k)])))
+##        print(chr((int(tempb[x])^ord(k[x%len(k)]))))
+##    print(tempb)
+##    return tempb
+##
 ##
 ##def DExorA(k,m):#arrays
 ##    tempa = []
 ##    for part in m:
 ##        tempa.append(DExor(k,part))
 ##    return tempa
+##def Xt():
+##    k='key'
+##    m='test'
+##    DExor(k,xor(k,m))
+##    
+####    print(tempa)
+####    tempa=[]
+####    buffer=''
+####    for x in m:
+####        if (len(buffer))==2:
+####            tempa.append('0x'  + buffer)
+####            buffer = ''
+####        else:
+####            buffer+=x
+####    print(tempa)
+##
+####    tempa = []
+####    buffer = ''
+####    for x in m:##readd the 0x bit
+####        if len(buffer) == 2:##hex = 2nums
+####            tempa.append('0x' + buffer)
+####            buffer = ''
+####            print('bc')
+####            buffer+=x
+####        else:
+####            print('add:'+str(x))
+####            buffer+=x
+####        print(x)
+####    print(buffer)
+####    print(len(x),';L;',len(m))
+####    print(tempa)
+##
+##            
+####def DExor(k,m):##normal txt custom
+####    temp = ''
+####    buffer = ''
+####    for x in range(len(m)):
+####        print('#########    ITER:'+str(x))
+####        print('Mchar: '+str(m[x]))
+####        print('Kchar: '+str(k[x%len(k)]))
+####        print('Msg: '+str(temp))
+####        print('Result: '+str(ord(m[x])^ord(k[x%len(k)])))
+####        if m[x] == ' ':
+####            print('@')
+####            for letters in range(len(buffer)):#for letters in buffer:
+####                temp +=chr(ord(buffer[letters])^ord(k[letters%len(k)]))
+####                print(temp,'    ',buffer)
+####                buffer = ''
+####        else:
+####            buffer += m[x]
+####        
+####        #temp += chr((ord(k[(len(str(k))%int(x+1))]))^ord(m[x]))
+####	#for x in range(len(temp)):
+####            #temp[x] = chr(temp[x])
+####    return temp
+####
+####def DExorA(k,m):#arrays
+####    tempa = []
+####    for part in m:
+####        tempa.append(DExor(k,part))
+####    return tempa
+##
+##def xtst():
+##    k = 'key'
+##    m = 'message'
+##    c = xor(k,m)
+##    u = xor(k,c)
+##    print('========\nkey = '+k+'\nmessage = '+m+'\n')
+##    print('crypt/uncrypt')
+##    print('\nc',c,'\nu',u)
+##    
+##def XXtst():
+##    k = 'key'
+##    m = 'message'
+##    c = xor(k,m)
+##    u = DExor(k,c)
+##    print('========\nkey = '+k+'\nmessage = '+m+'\n')
+##    print('crypt/uncrypt')
+##    print('\nc',c,'\nu',u)
+def readfile(fname):
+    f = open(fname,'r')
+    d = f.readlines()
+    f.close()
+    return d
+def xor(k,m,decrypt = False,arrayform=False):
+    print([k,m,decrypt,arrayform])
+    datb = ''##databuffer
+    datab = []##dataarraybuffer
+    if arrayform:##decrypts line by line 
+        tempa = []
+        for part in m:
+            tempa.append(xor(k,part,decrypt))
+        return tempa
 
-def xtst():
-    k = 'key'
-    m = 'message'
-    c = xor(k,m)
-    u = xor(k,c)
-    print('========\nkey = '+k+'\nmessage = '+m+'\n')
-    print('crypt/uncrypt')
-    print('\nc',c,'\nu',u)
     
-def XXtst():
-    k = 'key'
-    m = 'message'
-    c = xor(k,m)
-    u = DExor(k,c)
-    print('========\nkey = '+k+'\nmessage = '+m+'\n')
-    print('crypt/uncrypt')
-    print('\nc',c,'\nu',u)
-    
+    if decrypt:##decrypt xor prep
+        for x in range(0,len(m),2):
+            datab.append(int(m[x]+m[x+1],16))## changes the hex pair to base 10 int redy for xor'ing
+        print('d')
+    else:##encrypt xor prep
+        for x in range(len(m)):
+            datab.append(ord(m[x]))
+
+            
+    ##actual xor code
+    print('passed:',datab)
+    for item in range(len(datab)):
+        print('\n\n========'+str(item))
+        print('XOR:'+str(datab[item])+'|'+str(ord(k[item%(len(k)-1)]))+' = '+str(datab[item]^ord(k[item%(len(k)-1)])))
+        datab[item] = datab[item]^ord(k[item%(len(k)-1)])##xor rotating the -1 as the array starts at zero
+        
+    print(datab)
+    ##end xor code
+
+    #hex prefix stripper and formatter(rtrn string)
+    if decrypt:
+        for x in datab:
+            datb +=chr(x)
+    else:
+        for x in datab:
+            print('~~~~~~~~ PAIR|'+str(x)+'\nLEN = '+str(len(str(x)))+'\n')
+            if len(str(hex(x)[2:])) == 1:
+                print('padding:',x)
+                datb += '0' +str(hex(x)[2:].upper())
+            else:
+                datb += str(hex(x)[2:].upper())
+    print(datb)
+    print('DONE')
+    return datb
     
 
 
@@ -505,8 +555,10 @@ def peek(mega):##peek files in mega
     return csv2array(peeker)#csv2array(f.readline())
 
 ######XOR CRYPTO
+def xordata_test(k,m):##rotating circular key for each line
+    pass
 def makeMEGAC(megaIn,megac,k = 'key'):##the newlines \n are causing probs crypto works fine but handling of data not
-    cwd = os.getcwd()
+    cwd = os.getcwd()##use fname as key for 2nd xor?
     os.chdir(cwd)
     os.chdir('test')
     if '.mega' in megaIn.lower():
@@ -520,18 +572,22 @@ def makeMEGAC(megaIn,megac,k = 'key'):##the newlines \n are causing probs crypto
         megac+='.megac'
     print('encrypting: '+megaIn+' --> '+megac)
     ##cbit
-    f = open(megaIn,'r')
-    Mdatin  = f.readlines()
-    f.close()
-    print(Mdatin)
-    input()
-    Mdatout = xorA(k,Mdatin)
-    print(Mdatout)
-    input()
+##    f = open(megaIn,'r')
+##    Mdatin  = f.readlines()
+##    f.close()
+##    print(Mdatin)
+##    input()
+##    Mdatout = xorA(k,Mdatin)
+##    print(Mdatout)
+##    input()
+    Mdatin = readfile(megaIn)
+    Mdatout = xor(k,Mdatin,decrypt = False,arrayform = True)
+    print(Mdatin,'\n\n',Mdatout,'\n\n+++++')
+    #input('FFF@@@En')
     Mf = open(megac,'w')
     for x in Mdatout:
         Mf.write(x)
-    f.close()
+    Mf.close()
     os.chdir(cwd)
     ##end
     
@@ -551,18 +607,23 @@ def unmakeMEGAC(megacIn,mega,k = 'key'):##may want headers for mega and megac
         megacIn+='.megac'
     print('decrypting: '+megacIn+' --> '+mega)
     ##cbit
-    f = open(megacIn,'r')
-    Mdatin  = f.readlines()
-    f.close()
-    print(Mdatin)
-    input()
-    Mdatout = xorA(k,Mdatin)
-    print(Mdatout)
-    input()
+    
+##    f = open(megacIn,'r')
+##    Mdatin  = f.readlines()
+##    f.close()
+##    print(Mdatin)
+##    input()
+##    Mdatout = DExorA(k,Mdatin)
+##    print(Mdatout)
+##    input()
+    Mdatin = readfile(megacIn)
+    Mdatout = xor(k,Mdatin,decrypt = True,arrayform = True)
+    print(Mdatin,'\n\n',Mdatout,'\n\n+++++')
+    #input('FFF@@@')
     Mf = open(mega,'w')
     for x in Mdatout:
         Mf.write(x)
-    f.close()
+    Mf.close()
     os.chdir(cwd)
     ##end
 
@@ -574,6 +635,8 @@ def cryptotest():
 
 ####mega zip
 def makeMEGAZ(megaIn,megaZ):##megazip
+    print('unfinished')
+    input()
     if '.mega' in megaIn.lower():
         pass
     else:
@@ -589,6 +652,8 @@ def makeMEGAZ(megaIn,megaZ):##megazip
     
     
 def unmakeMEGAZ(megazIn,mega):##may want headers for mega and megac
+    print('unfinished')
+    input()
     if '.mega' in mega.lower():
         pass
     else:
