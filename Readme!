@@ -2,3 +2,7 @@ a wip lib for bundling files and wip compression with lzma
 functs
 expand()
 compress()
+makeMEGAC()
+unmakeMEGAC()
+makeMEGAZ()
+unamakeMEGAZ()
