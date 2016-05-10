@@ -33,7 +33,7 @@ class fileobject:
     def getlinelen(self):
         return self.linelen
     
-def hex2std(m):##adds 0x to hex
+def hex2std(m):##adds 0x to hex //not needed now but still usefull
     global hexchars
     tempa=[]
     buffer=''
@@ -200,6 +200,7 @@ def readfile(fname):
     d = f.readlines()
     f.close()
     return d
+
 def xor(k,m,decrypt = False,arrayform=False):
     print([k,m,decrypt,arrayform])
     datb = ''##databuffer
@@ -269,6 +270,8 @@ def makeresident():
 ##get length and store in length array
 ##write names,length,data
 
+
+#compact v2 needed to accept file names in array
 def compact(mega = 'OUT'):##could write len for each block in table rather then at beginning
     cwd = os.getcwd()##could maybe put at start of file dunno if lib will work or create funct to chdir from cwd to file
     os.chdir('DATA2MEGA')
@@ -396,7 +399,7 @@ def expand(fname):
     os.chdir(cwd)
 
 
-def unpack_name(fname,mega):
+def unpack_name(fname,mega):##unpacks given file form mega(check it works)
     if '.mega' in mega.lower():
         pass
     else:
@@ -635,25 +638,70 @@ def cryptotest():
 
 ####mega zip
 def makeMEGAZ(megaIn,megaZ):##megazip
-    print('unfinished')
-    input()
-    if '.mega' in megaIn.lower():
+    cwd = os.getcwd()
+    files = os.listdir()
+    #print('unfinished')
+    #input()
+    if '.mega' in megaIn.lower():##recheck all extention handling
         pass
     else:
         megaIn+='.mega'
 
-    if '.megaZ' in megaZ.lower():
+    if '.megaz' in megaZ.lower():##.megaZ
         pass
     else:
-        megaZ+='.megaZ'
-    print('compressing: '+megaIn+' --> '+megac)
+        megaZ+='.megaz'
+    print('compressing: '+megaIn+' --> '+megaZ)
+    if megaZ in files:
+        if input('file exists!\noverwrite(Y/N)').lower() == 'y':
+            with zipfile.ZipFile(megaZ, 'w') as myzip:
+                myzip.write(megaIn)
+                print('Wrote| '+str(megaIn))
+        else:
+            print('cancelling!')
+    else:
+        with zipfile.ZipFile(megaZ, 'w') as myzip:
+                myzip.write(megaIn)
+                print('Wrote| '+str(megaIn))
+    print('file done processing!')
     ##zippbit
     ##end
     
+def makebundleMEGAZ(mega_array,megaZ):
+    cwd = os.getcwd()
+    files = os.listdir()
+    for x in mega_array:
+        if '.mega' in x.lower():##recheck all extention handling
+            pass
+        else:
+            x+='.mega'##this needs to be changed as appends to wrong
+
+    if '.megaz' in megaZ.lower():##.megaZ
+        pass
+    else:
+        megaZ+='.megaz'
+        
+    print('compressing: '+mega_array+' --> '+megaZ)
+    if megaZ in files:
+        if input('file exists!\noverwrite(Y/N)').lower() == 'y':
+            with zipfile.ZipFile(megaZ, 'w') as myzip:
+                for x in mega_array:
+                    myzip.write(x)
+                    print('Wrote| '+str(x))
+        else:
+            print('cancelling!')
+    else:
+        with zipfile.ZipFile(megaZ, 'w') as myzip:
+                for x in mega_array:
+                    myzip.write(x)
+                    print('Wrote| '+str(x))
+    print('file(s) done processing!')
     
 def unmakeMEGAZ(megazIn,mega):##may want headers for mega and megac
+    cwd = os.getcwd()
+    files = os.listdir()
     print('unfinished')
-    input()
+    input('currently doesnt work prop continue? mega not needed')
     if '.mega' in mega.lower():
         pass
     else:
@@ -664,12 +712,35 @@ def unmakeMEGAZ(megazIn,mega):##may want headers for mega and megac
     else:
         megazIn+='.megaz'
     print('decompressing: '+megazIn+' --> '+mega)
-    with zipfile.ZipFile(str(fname)+".megaz") as a:###NOT DONE
-        a.extractall()
+    if megazIn in files:
+        if mega in files:
+            if input('file exists!\noverwrite(Y/N)').lower() == 'y':
+                with zipfile.ZipFile(megazIn) as myzip:
+                    myzip.extractall()
+                    print('Exctracted| '+str(megazIn))
+            else:
+                print('Cancelled!')
+                
+        else:
+            with zipfile.ZipFile(megazIn, 'w') as myzip:
+                    myzip.extractall()
+                    print('Exctracted| '+str(megazIn))
+                
+            
+##          with zipfile.ZipFile(str(fname)+".megaz") as a:###NOT DONE
+##               a.extractall()
+    else:
+        print('file '+str(megazIn)+' not found!')
+    ##file renaming to mega' 
     print('megaz = '+mega+'\nDONE!')
     
     ##zippbit
     ##end
+
+def peekMegaZ(megazIn):
+    myzip = zipfile.ZipFile(megazIn)
+    myzip.printdir()
+    myzip.close()
 ##END    
 #def cryptMEGAheader(megax):##old def
 ##def cryptMega(mega,compressed = False,cryptinfo = ['','','']):#megafile|compression enabled|cryptinfo[type,key,iteration]    ####.megax for crypted output
