@@ -737,10 +737,14 @@ def unmakeMEGAZ(megazIn,mega):##may want headers for mega and megac
     ##zippbit
     ##end
 
-def peekMegaZ(megazIn):
+def peekMegaZ(megazIn,pt=False):
     myzip = zipfile.ZipFile(megazIn)
-    myzip.printdir()
     myzip.close()
+    if pt:
+        myzip.printdir()
+    else:
+        return myzip.namelist()##names =
+    
 ##END    
 #def cryptMEGAheader(megax):##old def
 ##def cryptMega(mega,compressed = False,cryptinfo = ['','','']):#megafile|compression enabled|cryptinfo[type,key,iteration]    ####.megax for crypted output
